@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Golf Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #e0f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      border: 2px solid #00796b;
+      background-color: #a5d6a7;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let ball = {
+      x: 100,
+      y: 250,
+      radius: 10,
+      dx: 0,
+      dy: 0
+    };
+
+    const hole = {
+      x: 700,
+      y: 250,
+      radius: 15
+    };
+
+    let isDragging = false;
+    let mouseDownPos = { x: 0, y: 0 };
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    function drawHole() {
+      ctx.beginPath();
+      ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "black";
+      ctx.fill();
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Move ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Friction
+      ball.dx *= 0.98;
+      ball.dy *= 0.98;
+
+      // Stop ball if speed is low
+      if (Math.abs(ball.dx) < 0.05) ball.dx = 0;
+      if (Math.abs(ball.dy) < 0.05) ball.dy = 0;
+
+      drawHole();
+      drawBall();
+
+      // Check if ball is in the hole
+      let distToHole = Math.hypot(ball.x - hole.x, ball.y - hole.y);
+      if (distToHole < hole.radius) {
+        alert("Hole in one!");
+        resetGame();
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    function resetGame() {
+      ball.x = 100;
+      ball.y = 250;
+      ball.dx = 0;
+      ball.dy = 0;
+    }
+
+    canvas.addEventListener("mousedown", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseDownPos = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+      isDragging = true;
+    });
+
+    canvas.addEventListener("mouseup", (e) => {
+      if (!isDragging) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseUpPos = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+
+      const dx = mouseDownPos.x - mouseUpPos.x;
+      const dy = mouseDownPos.y - mouseUpPos.y;
+
+      ball.dx = dx / 10;
+      ball.dy = dy / 10;
+
+      isDragging = false;
+    });
+
+    update();
+  </script>
+</body>
+</html>
