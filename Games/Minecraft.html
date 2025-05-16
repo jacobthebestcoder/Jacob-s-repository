@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Minecraft</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; background: #87ceeb; }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const blockSize = 40;
+const rows = Math.floor(canvas.height / blockSize);
+const cols = Math.floor(canvas.width / blockSize);
+const world = [];
+
+// Initialize world with grass and dirt
+for (let y = 0; y < rows; y++) {
+  world[y] = [];
+  for (let x = 0; x < cols; x++) {
+    if (y > rows / 2) world[y][x] = 'dirt';
+    else if (y === Math.floor(rows / 2)) world[y][x] = 'grass';
+    else world[y][x] = null;
+  }
+}
+
+function drawWorld() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (world[y][x] === 'grass') {
+        ctx.fillStyle = '#228B22';
+        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+      } else if (world[y][x] === 'dirt') {
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+      }
+      ctx.strokeStyle = '#00000020';
+      ctx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+    }
+  }
+}
+
+canvas.addEventListener('click', (e) => {
+  const x = Math.floor(e.clientX / blockSize);
+  const y = Math.floor(e.clientY / blockSize);
+  if (world[y][x]) {
+    world[y][x] = null;
+  } else {
+    world[y][x] = 'dirt';
+  }
+});
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawWorld();
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+</body>
+</html>
