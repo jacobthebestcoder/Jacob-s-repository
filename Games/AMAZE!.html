@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amaze!</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    canvas {
+      border: 2px solid #333;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const gridSize = 5;
+    const tileSize = canvas.width / gridSize;
+
+    let ball = { x: 0, y: 0 };
+    let painted = Array(gridSize * gridSize).fill(false);
+
+    function drawGrid() {
+      for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+          const index = row * gridSize + col;
+          ctx.fillStyle = painted[index] ? '#4caf50' : '#ddd';
+          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+          ctx.strokeStyle = '#bbb';
+          ctx.strokeRect(col * tileSize, row * tileSize, tileSize, tileSize);
+        }
+      }
+    }
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(
+        ball.x * tileSize + tileSize / 2,
+        ball.y * tileSize + tileSize / 2,
+        tileSize / 4,
+        0,
+        Math.PI * 2
+      );
+      ctx.fillStyle = '#2196f3';
+      ctx.fill();
+    }
+
+    function paintTile() {
+      const index = ball.y * gridSize + ball.x;
+      painted[index] = true;
+    }
+
+    function isGameComplete() {
+      return painted.every(p => p);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawGrid();
+      drawBall();
+    }
+
+    function moveBall(dx, dy) {
+      while (true) {
+        const newX = ball.x + dx;
+        const newY = ball.y + dy;
+        if (
+          newX >= 0 && newX < gridSize &&
+          newY >= 0 && newY < gridSize
+        ) {
+          ball.x = newX;
+          ball.y = newY;
+          paintTile();
+        } else {
+          break;
+        }
+      }
+      draw();
+      if (isGameComplete()) {
+        setTimeout(() => alert("Level Complete!"), 100);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp") moveBall(0, -1);
+      else if (e.key === "ArrowDown") moveBall(0, 1);
+      else if (e.key === "ArrowLeft") moveBall(-1, 0);
+      else if (e.key === "ArrowRight") moveBall(1, 0);
+    });
+
+    paintTile();
+    draw();
+  </script>
+</body>
+</html>
