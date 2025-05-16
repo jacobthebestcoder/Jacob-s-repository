@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geometry Dash Mini</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #222;
+      border: 2px solid #fff;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let player = {
+      x: 50,
+      y: 300,
+      width: 30,
+      height: 30,
+      dy: 0,
+      gravity: 0.8,
+      jumpPower: -12,
+      grounded: false
+    };
+
+    let obstacles = [];
+    let obstacleTimer = 0;
+
+    function createObstacle() {
+      const height = 30 + Math.random() * 70;
+      obstacles.push({
+        x: canvas.width,
+        y: canvas.height - height,
+        width: 20,
+        height: height
+      });
+    }
+
+    function drawPlayer() {
+      ctx.fillStyle = '#0ff';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = '#f00';
+      obstacles.forEach(ob => {
+        ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+      });
+    }
+
+    function updatePlayer() {
+      player.dy += player.gravity;
+      player.y += player.dy;
+
+      if (player.y + player.height > canvas.height) {
+        player.y = canvas.height - player.height;
+        player.dy = 0;
+        player.grounded = true;
+      }
+    }
+
+    function updateObstacles() {
+      obstacleTimer++;
+      if (obstacleTimer % 90 === 0) {
+        createObstacle();
+      }
+
+      for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].x -= 6;
+
+        // Collision detection
+        if (
+          player.x < obstacles[i].x + obstacles[i].width &&
+          player.x + player.width > obstacles[i].x &&
+          player.y < obstacles[i].y + obstacles[i].height &&
+          player.y + player.height > obstacles[i].y
+        ) {
+          alert("Game Over!");
+          document.location.reload();
+        }
+      }
+
+      obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      updatePlayer();
+      updateObstacles();
+
+      drawPlayer();
+      drawObstacles();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 'Space' && player.grounded) {
+        player.dy = player.jumpPower;
+        player.grounded = false;
+      }
+    });
+
+    gameLoop();
+  </script>
+</body>
+</html>
