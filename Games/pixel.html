@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Duel - Solo Mode</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1b1b1b;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #222;
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const playerSize = 20;
+    const bulletSize = 5;
+    const speed = 3;
+    const bulletSpeed = 5;
+    const bullets = [];
+
+    const player1 = { x: 50, y: 50, color: 'red', up: 'w', down: 's', left: 'a', right: 'd', shoot: 'f', dx: 0, dy: 0, score: 0 };
+    const aiPlayer = { x: 730, y: 530, color: 'blue', dx: 0, dy: 0, score: 0, cooldown: 0 };
+
+    const keys = {};
+
+    document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+    document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+
+    function shoot(player, dirX, dirY) {
+      bullets.push({ x: player.x + playerSize / 2, y: player.y + playerSize / 2, dx: dirX * bulletSpeed, dy: dirY * bulletSpeed, owner: player });
+    }
+
+    function updatePlayer(player) {
+      player.dx = player.dy = 0;
+      if (keys[player.left]) player.dx = -speed;
+      if (keys[player.right]) player.dx = speed;
+      if (keys[player.up]) player.dy = -speed;
+      if (keys[player.down]) player.dy = speed;
+      if (keys[player.shoot] && !player.cooldown) {
+        shoot(player, 1, 0);
+        player.cooldown = 15;
+      }
+      player.x += player.dx;
+      player.y += player.dy;
+      if (player.cooldown > 0) player.cooldown--;
+    }
+
+    function updateAI(player, target) {
+      player.dy = 0;
+      if (target.y < player.y) player.dy = -speed;
+      else if (target.y > player.y) player.dy = speed;
+      player.y += player.dy;
+
+      if (player.cooldown <= 0) {
+        shoot(player, -1, 0);
+        player.cooldown = 40;
+      } else {
+        player.cooldown--;
+      }
+    }
+
+    function updateBullets() {
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.dx;
+        b.y += b.dy;
+
+        if (
+          b.x < 0 || b.y < 0 ||
+          b.x > canvas.width || b.y > canvas.height
+        ) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        const target = b.owner === player1 ? aiPlayer : player1;
+        if (
+          b.x > target.x && b.x < target.x + playerSize &&
+          b.y > target.y && b.y < target.y + playerSize
+        ) {
+          b.owner.score++;
+          bullets.splice(i, 1);
+          resetPlayers();
+        }
+      }
+    }
+
+    function resetPlayers() {
+      player1.x = 50;
+      player1.y = 50;
+      aiPlayer.x = 730;
+      aiPlayer.y = 530;
+      bullets.length = 0;
+    }
+
+    function drawPlayer(player) {
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, playerSize, playerSize);
+    }
+
+    function drawBullets() {
+      ctx.fillStyle = 'yellow';
+      for (const b of bullets) {
+        ctx.fillRect(b.x, b.y, bulletSize, bulletSize);
+      }
+    }
+
+    function drawScore() {
+      ctx.fillStyle = 'white';
+      ctx.font = '20px monospace';
+      ctx.fillText(`You: ${player1.score}`, 20, 30);
+      ctx.fillText(`AI: ${aiPlayer.score}`, 650, 30);
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updatePlayer(player1);
+      updateAI(aiPlayer, player1);
+      updateBullets();
+      drawPlayer(player1);
+      drawPlayer(aiPlayer);
+      drawBullets();
+      drawScore();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
