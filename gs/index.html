@@ -1,12 +1,77 @@
 <!DOCTYPE html>
 <html lang=en>
   <head>
-<title>Game selesction</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select your game</title>
+ <style>
 
-    
-  </head>
-  <body>
-<h1>Please select your game</h1>
+
+        /* The password modal window */
+        .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .modal-content input {
+            padding: 10px;
+            width: 80%;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .modal-content button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .modal-content button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the content by default */
+        .content {
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Password</h2>
+            <input type="password" id="passwordInput" placeholder="Password">
+            <button onclick="checkPassword()">Submit</button>
+        </div>
+    </div>
+
+    <!-- Website content (hidden initially) -->
+    <div id="websiteContent" class="content">
+      <h1>Please select your game</h1>
 <br>
     <br>
 <a href="https://jacobthebestcoder.github.io/Jacob-s-repository/Games/pixel.html">Pixel duel</a>
@@ -16,5 +81,40 @@
     <a href="https://jacobthebestcoder.github.io/Jacob-s-repository/Games/Fidget.html">fidget spinner</a>
     <br>
     <a href="">Game 4</a>
+
+    </div>
+
+    <script>
+        // The correct password
+        const correctPassword = "JACOB"; // Change to your desired password
+
+        // Function to check the password
+        function checkPassword() {
+            const enteredPassword = document.getElementById("passwordInput").value;
+
+            // Check if the entered password is correct
+            if (enteredPassword === correctPassword) {
+                // If correct, hide the modal and show the content
+                document.getElementById("passwordModal").style.display = "none";
+                document.getElementById("websiteContent").style.display = "block";
+            } else {
+                // If incorrect, alert the user
+                alert("incorrwext ");
+
+
+
+            }
+        }
+    </script>
+
+
+
+      
+
+
     
+  </head>
+  <body>
+
   </body>
+</html>
