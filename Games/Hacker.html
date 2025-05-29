@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hacker Simulator</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #00FF00;
+      font-family: monospace;
+      padding: 20px;
+    }
+
+    #terminal {
+      background: black;
+      border: 2px solid #00FF00;
+      padding: 15px;
+      height: 80vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    #tip {
+      margin-top: 15px;
+      color: #33ff33;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="color: #00FF00;">Hacker Simulator 3000</h1>
+  <div id="terminal">Initializing hacking tool...\n</div>
+  <div id="tip">💡 Type or press any key to hack...</div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+
+    const fakeCommands = [
+      "Bypassing firewall...",
+      "Accessing mainframe...",
+      "Decrypting passwords...",
+      "Uploading payload...",
+      "Injecting SQL...",
+      "Establishing backdoor...",
+      "Downloading confidential data...",
+      "Spoofing MAC address...",
+      "Cracking admin login...",
+      "Hacking NASA... (just kidding)",
+    ];
+
+    function addLine(text) {
+      terminal.textContent += text + "\n";
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    document.addEventListener("keydown", () => {
+      const randomIndex = Math.floor(Math.random() * fakeCommands.length);
+      const delay = Math.floor(Math.random() * 1000);
+      setTimeout(() => {
+        addLine("> " + fakeCommands[randomIndex]);
+      }, delay);
+    });
+
+    // Auto "boot-up" animation
+    let bootLines = [
+      "Loading system...",
+      "Connecting to remote server...",
+      "Authenticating...",
+      "Access granted.",
+      "Terminal ready.",
+    ];
+
+    let i = 0;
+    let bootInterval = setInterval(() => {
+      if (i < bootLines.length) {
+        addLine(bootLines[i]);
+        i++;
+      } else {
+        clearInterval(bootInterval);
+      }
+    }, 500);
+  </script>
+</body>
+</html>
