@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clicker Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+      background: #f4f4f4;
+    }
+    #clickButton {
+      padding: 20px 40px;
+      font-size: 24px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    #upgradeButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #stats {
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Clicker Game</h1>
+  <button id="clickButton">Click Me!</button>
+  <br />
+  <button id="upgradeButton">Upgrade Click (Cost: 50)</button>
+  <div id="stats">
+    <p>Score: <span id="score">0</span></p>
+    <p>Click Power: <span id="clickPower">1</span></p>
+  </div>
+
+  <script>
+    let score = 0;
+    let clickPower = 1;
+    let upgradeCost = 50;
+
+    const scoreDisplay = document.getElementById("score");
+    const clickPowerDisplay = document.getElementById("clickPower");
+    const clickButton = document.getElementById("clickButton");
+    const upgradeButton = document.getElementById("upgradeButton");
+
+    clickButton.addEventListener("click", () => {
+      score += clickPower;
+      scoreDisplay.textContent = score;
+    });
+
+    upgradeButton.addEventListener("click", () => {
+      if (score >= upgradeCost) {
+        score -= upgradeCost;
+        clickPower++;
+        upgradeCost = Math.floor(upgradeCost * 1.5);
+
+        scoreDisplay.textContent = score;
+        clickPowerDisplay.textContent = clickPower;
+        upgradeButton.textContent = `Upgrade Click (Cost: ${upgradeCost})`;
+      } else {
+        alert("Not enough points to upgrade!");
+      }
+    });
+  </script>
+</body>
+</html>
