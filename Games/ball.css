@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Click the Button Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #282c34;
+    color: white;
+    margin: 0;
+    padding: 50px;
+  }
+  #gameArea {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
+    background: #444;
+    border-radius: 10px;
+  }
+  #target {
+    position: absolute;
+    background: #61dafb;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #target:hover {
+    background: #21a1f1;
+  }
+  #score {
+    font-size: 24px;
+  }
+</style>
+</head>
+<body>
+  <h1>Click the Button Game</h1>
+  <div id="score">Score: 0</div>
+  <div id="gameArea">
+    <div id="target"></div>
+  </div>
+
+  <script>
+    const target = document.getElementById('target');
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('score');
+    let score = 0;
+
+    function moveTarget() {
+      const maxX = gameArea.clientWidth - target.clientWidth;
+      const maxY = gameArea.clientHeight - target.clientHeight;
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      target.style.left = randomX + 'px';
+      target.style.top = randomY + 'px';
+    }
+
+    target.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = 'Score: ' + score;
+      moveTarget();
+    });
+
+    // Initial position
+    moveTarget();
+  </script>
+</body>
+</html>
