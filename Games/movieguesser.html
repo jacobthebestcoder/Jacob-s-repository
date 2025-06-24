@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guess the Movie by Emojis</title>
+<style>
+  body {
+    background-color: #121212;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    min-height: 100vh;
+  }
+  h1 {
+    margin-bottom: 15px;
+  }
+  #emoji-clue {
+    font-size: 50px;
+    margin: 20px 0;
+  }
+  #input-guess {
+    font-size: 24px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    width: 300px;
+    max-width: 90vw;
+    text-align: center;
+  }
+  #submit-btn {
+    margin-top: 15px;
+    padding: 10px 25px;
+    font-size: 20px;
+    background-color: #0e7afe;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  #submit-btn:hover {
+    background-color: #0056d6;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 24px;
+    min-height: 30px;
+  }
+  #score {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #ccc;
+  }
+  #next-btn {
+    margin-top: 15px;
+    padding: 8px 20px;
+    font-size: 18px;
+    background-color: #27ae60;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    display: none;
+  }
+  #next-btn:hover {
+    background-color: #219150;
+  }
+</style>
+</head>
+<body>
+
+<h1>Guess the Movie by Emojis 🎬🍿</h1>
+
+<div id="emoji-clue">🤖🚗🕶️</div>
+
+<input type="text" id="input-guess" placeholder="Type your guess here..." autocomplete="off" />
+<button id="submit-btn">Submit</button>
+
+<div id="message"></div>
+<div id="score">Score: 0 / 5</div>
+<button id="next-btn">Next Movie</button>
+
+<script>
+  const movies = [
+    { emojis: '🤖🚗🕶️', answer: 'transformers' },
+    { emojis: '🦁👑', answer: 'the lion king' },
+    { emojis: '🧙‍♂️🪄⚡', answer: 'harry potter' },
+    { emojis: '👻🔫', answer: 'ghostbusters' },
+    { emojis: '🚢❄️', answer: 'titanic' }
+    { emojis: '', answer: 'et' }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+
+  const emojiClue = document.getElementById('emoji-clue');
+  const inputGuess = document.getElementById('input-guess');
+  const submitBtn = document.getElementById('submit-btn');
+  const message = document.getElementById('message');
+  const scoreDisplay = document.getElementById('score');
+  const nextBtn = document.getElementById('next-btn');
+
+  function loadMovie() {
+    emojiClue.textContent = movies[currentIndex].emojis;
+    inputGuess.value = '';
+    inputGuess.disabled = false;
+    submitBtn.disabled = false;
+    message.textContent = '';
+    nextBtn.style.display = 'none';
+    inputGuess.focus();
+  }
+
+  function normalizeText(text) {
+    return text.toLowerCase().trim();
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const guess = normalizeText(inputGuess.value);
+    if (!guess) {
+      message.textContent = 'Please enter a guess!';
+      return;
+    }
+
+    const correctAnswer = movies[currentIndex].answer;
+
+    if (guess === correctAnswer) {
+      score++;
+      message.textContent = '✅ Correct! Great job!';
+      scoreDisplay.textContent = `Score: ${score} / ${movies.length}`;
+      inputGuess.disabled = true;
+      submitBtn.disabled = true;
+      nextBtn.style.display = 'inline-block';
+    } else {
+      message.textContent = '❌ Sorry, try again!';
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex++;
+    if (currentIndex >= movies.length) {
+      message.textContent = `Game over! Your final score is ${score} out of ${movies.length}. 🎉`;
+      emojiClue.textContent = '🎬';
+      inputGuess.style.display = 'none';
+      submitBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      return;
+    }
+    loadMovie();
+  });
+
+  // Allow Enter key to submit guess
+  inputGuess.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      submitBtn.click();
+    }
+  });
+
+  loadMovie();
+</script>
+
+</body>
+</html>
